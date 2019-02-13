@@ -51,10 +51,15 @@ module Spar.Scim
     ) where
 
 import Imports
+
+import Control.Lens
+import Control.Monad.Catch (try)
 import Control.Monad.Except
+import Data.String.Conversions (cs)
 import Servant
 import Servant.API.Generic
-import Spar.App (Spar)
+import Spar.App (Spar(..), Env)
+import Spar.Error (SparError, sparToServantErr)
 import Spar.Scim.Types
 import Spar.Scim.Auth
 import Spar.Scim.User
