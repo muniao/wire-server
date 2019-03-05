@@ -81,12 +81,17 @@ data AwsEnv = AwsEnv
 
 makeLenses ''Env
 
+mkLogger :: Opts -> IO Logger
+mkLogger opts = Log.new $ Log.defSettings
+    & Log.setLogLevel (opts ^. optLogLevel)
+    & Log.setOutput Log.StdOut
+    & Log.setFormat Nothing
+    & Log.setNetStrings (opts ^. optLogNetStrings)
+
 newEnv :: Opts -> IO Env
 newEnv o = do
     met  <- Metrics.metrics
-    lgr  <- Log.new $ Log.setOutput Log.StdOut
-                    . Log.setFormat Nothing
-                    $ Log.defSettings
+    lgr  <- mkLogger o
     mgr  <- initHttpManager
     awe  <- initAws o lgr mgr
     return $ Env awe met lgr mgr def (o^.optSettings)
